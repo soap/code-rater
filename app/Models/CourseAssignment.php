@@ -19,7 +19,7 @@ class CourseAssignment extends Model
         'published_up',
         'published_down',
     ];
-    
+
     public function course(): BelongsTo
     {
         return $this->belongsTo(Course::class);

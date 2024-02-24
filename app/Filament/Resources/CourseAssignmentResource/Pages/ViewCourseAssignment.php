@@ -4,9 +4,9 @@ namespace App\Filament\Resources\CourseAssignmentResource\Pages;
 
 use App\Filament\Resources\CourseAssignmentResource;
 use Filament\Actions;
-use Filament\Resources\Pages\ViewRecord;
+use Guava\Filament\NestedResources\Pages\NestedViewRecord;
 
-class ViewCourseAssignment extends ViewRecord
+class ViewCourseAssignment extends NestedViewRecord
 {
     protected static string $resource = CourseAssignmentResource::class;
 

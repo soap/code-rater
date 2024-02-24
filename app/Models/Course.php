@@ -11,11 +11,11 @@ class Course extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 
+        'name',
         'slug',
         'description',
-        'price', 
-        'start_date', 
+        'price',
+        'start_date',
         'end_date',
         'sale_mode',
     ];
@@ -24,7 +24,7 @@ class Course extends Model
         'start_date' => 'date',
         'end_date' => 'date',
     ];
-    
+
     public function assignments(): HasMany
     {
         return $this->hasMany(CourseAssignment::class);

@@ -2,36 +2,28 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\CourseAssignmentResource\Pages;
-use App\Filament\Resources\CourseAssignmentResource\RelationManagers;
-use App\Models\CourseAssignment;
+use App\Filament\Resources\TestCaseResource\Pages;
+use App\Models\TestCase;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Guava\Filament\NestedResources\Ancestor;
 use Guava\Filament\NestedResources\Resources\NestedResource;
-use Illuminate\Contracts\Support\Htmlable;
-use Illuminate\Database\Eloquent\Model;
 
-class CourseAssignmentResource extends NestedResource
+class TestCaseResource extends NestedResource
 {
-    protected static ?string $model = CourseAssignment::class;
+    protected static ?string $model = TestCase::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $breadcrumbTitleAttribute = 'name';
 
-    public static function getRecordTitle(?Model $record): string|null|Htmlable
-    {
-        return $record->name;
-    }
-
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('course_id')
+                Forms\Components\TextInput::make('course_assignment_id')
                     ->required()
                     ->numeric()->hidden(),
                 Forms\Components\TextInput::make('name')
@@ -40,13 +32,30 @@ class CourseAssignmentResource extends NestedResource
                 Forms\Components\Textarea::make('description')
                     ->maxLength(65535)
                     ->columnSpanFull(),
-                Forms\Components\TextInput::make('max_submissions')
+                Forms\Components\TextInput::make('order')
                     ->required()
                     ->numeric()
-                    ->default(3),
-                Forms\Components\DateTimePicker::make('published_up')
-                    ->required(),
-                Forms\Components\DateTimePicker::make('published_down')
+                    ->default(0),
+                Forms\Components\TextInput::make('test_type_id')
+                    ->required()
+                    ->numeric(),
+                Forms\Components\TextInput::make('passed_score')
+                    ->required()
+                    ->numeric()
+                    ->default(1),
+                Forms\Components\TextInput::make('failed_score')
+                    ->required()
+                    ->numeric()
+                    ->default(0),
+                Forms\Components\TextInput::make('command')
+                    ->maxLength(255),
+                Forms\Components\Textarea::make('input')
+                    ->maxLength(65535)
+                    ->columnSpanFull(),
+                Forms\Components\Textarea::make('output')
+                    ->maxLength(65535)
+                    ->columnSpanFull(),
+                Forms\Components\Toggle::make('match_type')
                     ->required(),
             ]);
     }
@@ -55,17 +64,27 @@ class CourseAssignmentResource extends NestedResource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('max_submissions')
+                Tables\Columns\TextColumn::make('course_assignment_id')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('published_up')
-                    ->dateTime()
+                Tables\Columns\TextColumn::make('name')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('order')
+                    ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('published_down')
-                    ->dateTime()
+                Tables\Columns\TextColumn::make('test_type_id')
+                    ->numeric()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('passed_score')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('failed_score')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('command')
+                    ->searchable(),
+                Tables\Columns\IconColumn::make('match_type')
+                    ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -92,21 +111,21 @@ class CourseAssignmentResource extends NestedResource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\TestCasesRelationManager::class,
+            //
         ];
     }
 
     public static function getAncestor(): ?Ancestor
     {
-        return Ancestor::make(CourseResource::class);
+        return Ancestor::make(CourseAssignmentResource::class);
     }
 
     public static function getPages(): array
     {
         return [
-            'create' => Pages\CreateCourseAssignment::route('/create'),
-            'edit' => Pages\EditCourseAssignment::route('/{record}/edit'),
-            'view' => Pages\ViewCourseAssignment::route('/{record}'),
+            'create' => Pages\CreateTestCase::route('/create'),
+            'view' => Pages\ViewTestCase::route('/{record}'),
+            'edit' => Pages\EditTestCase::route('/{record}/edit'),
         ];
     }
 }

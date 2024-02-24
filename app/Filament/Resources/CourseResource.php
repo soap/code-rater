@@ -3,33 +3,29 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\CourseResource\Pages;
-use App\Filament\Resources\CourseAssignmentResource\Pages\CreateCourseAssignment;
-use App\Filament\Resources\CourseAssignmentResource\Pages\EditCourseAssignment;
-use App\Filament\Resources\CourseAssignmentResource\Pages\ListCourseAssignments;
 use App\Filament\Resources\CourseResource\RelationManagers;
 use App\Models\Course;
-use Illuminate\Contracts\Support\Htmlable;
-use Illuminate\Database\Eloquent\Model;
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Forms\Components;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Guava\Filament\NestedResources\Resources\NestedResource;
+use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Database\Eloquent\Model;
 
-class CourseResource extends Resource
+class CourseResource extends NestedResource
 {
     protected static ?string $model = Course::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?string $breadcrumbTitleAttribute = 'name';
+
     public static function getRecordTitle(?Model $record): string|null|Htmlable
     {
         return $record->name;
     }
-    
+
     public static function form(Form $form): Form
     {
         return $form
@@ -74,27 +70,6 @@ class CourseResource extends Resource
                                     ->required()
                                     ->numeric(),
                             ]),
-                        Forms\Components\Tabs\Tab::make('Assignments')
-                            ->schema([
-                                Forms\Components\Repeater::make('courseAssignments')
-                                    ->columns(2)
-                                    ->schema([
-                                        Forms\Components\TextInput::make('name')
-                                            ->required()
-                                            ->maxLength(255),
-                                        Forms\Components\TextInput::make('max_submissions')
-                                            ->required()
-                                            ->numeric()
-                                            ->default(3),
-                                        Forms\Components\Textarea::make('description')
-                                            ->maxLength(65535)
-                                            ->columnSpanFull(),
-                                        Forms\Components\DateTimePicker::make('published_up')
-                                            ->required(),
-                                        Forms\Components\DateTimePicker::make('published_down')
-                                            ->required(),
-                                    ]),
-                            ]),
                     ]),
 
             ]);
@@ -138,13 +113,6 @@ class CourseResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\Action::make('Assignments')
-                    ->icon('heroicon-m-academic-cap')
-                    ->url(
-                        fn (Course $record): string => static::getUrl('course-assignments.index', [
-                            'parent' => $record->id
-                        ])
-                    ),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -156,7 +124,7 @@ class CourseResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\AssignmentsRelationManager::class,
         ];
     }
 
@@ -167,10 +135,6 @@ class CourseResource extends Resource
             'create' => Pages\CreateCourse::route('/create'),
             'view' => Pages\ViewCourse::route('/{record}'),
             'edit' => Pages\EditCourse::route('/{record}/edit'),
-
-            'course-assignments.index' => ListCourseAssignments::route('/{parent}/assignments'),
-            'course-assignments.create' => CreateCourseAssignment::route('/{parent}/assignments/create'),
-            'course-assignments.edit' => EditCourseAssignment::route('/{parent}/assignments/{record}/edit'),
         ];
     }
 }
