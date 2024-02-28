@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('description')->nullable();
+            $table->integer('ordering')->default(0);
             $table->foreignId('course_id')->constrained()->cascadeOnDelete();
             $table->integer('max_submissions')->default(3)->comment('0: unlimited');
             $table->timestamp('published_up');

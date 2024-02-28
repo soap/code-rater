@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('course_assignment_id')->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->text('order')->default(1);
+            $table->integer('ordering')->default(1);
             $table->integer('score')->default(0);
             $table->timestamp('submitted_at');
             $table->timestamps();

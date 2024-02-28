@@ -3,7 +3,10 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use BezhanSalleh\FilamentShield\Traits\HasPanelShield;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
@@ -19,6 +22,7 @@ class User extends Authenticatable
     use HasRoles;
     use Notifiable;
     use TwoFactorAuthenticatable;
+    use HasPanelShield;
 
     /**
      * The attributes that are mass assignable.
@@ -30,6 +34,7 @@ class User extends Authenticatable
         'last_name',
         'email',
         'password',
+        'profile_photo_path'
     ];
 
     /**
@@ -62,8 +67,33 @@ class User extends Authenticatable
         'profile_photo_url',
     ];
 
+    public function getFilamentAvatarUrl(): ?string
+    {
+        return $this->profile_photo_url;
+    }
+
     public function getNameAttribute(): string
     {
         return $this->first_name.' '.$this->last_name;
     }
+
+    public function getFullNameAttribute(): string
+    {
+        return $this->getNameAttribute();
+    }
+
+   /**
+     * Used in filamnet resource to display user's roles.
+     */
+    public function getRoleNamesAttribute(): string
+    {
+        return $this->roles->pluck('name')->join(',');
+    }
+    
+    public function courses():BelongsToMany
+    {
+        return $this->belongsToMany(Course::class, 'course_attendants')->using(CourseAttendant::class);
+    }
+
+
 }

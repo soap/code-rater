@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->text('description')->nullable();
             $table->foreignId('course_assignment_id')->constrained()->cascadeOnDelete();
-            $table->integer('order')->default(0);
+            $table->integer('ordering')->default(0);
             $table->integer('test_type_id')->comment('1: compilation test, 2: functionality test, 3: code quality test');
             $table->integer('passed_score')->default(1);
             $table->integer('failed_score')->default(0);

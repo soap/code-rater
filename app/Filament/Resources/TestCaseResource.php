@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\TestCaseResource\Pages;
 use App\Models\TestCase;
+use App\Enums\TestTypeEnum;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Tables;
@@ -32,13 +33,6 @@ class TestCaseResource extends NestedResource
                 Forms\Components\Textarea::make('description')
                     ->maxLength(65535)
                     ->columnSpanFull(),
-                Forms\Components\TextInput::make('order')
-                    ->required()
-                    ->numeric()
-                    ->default(0),
-                Forms\Components\TextInput::make('test_type_id')
-                    ->required()
-                    ->numeric(),
                 Forms\Components\TextInput::make('passed_score')
                     ->required()
                     ->numeric()
@@ -47,6 +41,10 @@ class TestCaseResource extends NestedResource
                     ->required()
                     ->numeric()
                     ->default(0),
+                Forms\Components\Select::make('test_type_id')
+                    ->required()
+                    ->options(TestTypeEnum::class),
+
                 Forms\Components\TextInput::make('command')
                     ->maxLength(255),
                 Forms\Components\Textarea::make('input')
@@ -64,9 +62,6 @@ class TestCaseResource extends NestedResource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('course_assignment_id')
-                    ->numeric()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('order')
@@ -117,7 +112,7 @@ class TestCaseResource extends NestedResource
 
     public static function getAncestor(): ?Ancestor
     {
-        return Ancestor::make(CourseAssignmentResource::class);
+        return Ancestor::make(CourseAssignmentResource::class, 'courseAssignment');
     }
 
     public static function getPages(): array

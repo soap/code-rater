@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\CourseAssignmentResource\RelationManagers;
 
 use Filament\Forms;
+use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Form;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -27,8 +28,11 @@ class TestCasesRelationManager extends NestedRelationManager
         return $table
             ->recordTitleAttribute('name')
             ->columns([
+                Tables\Columns\TextColumn::make('ordering'),
                 Tables\Columns\TextColumn::make('name'),
+                Tables\Columns\TextColumn::make('command'),
             ])
+            ->reorderable('ordering')
             ->filters([
                 //
             ])

@@ -1,17 +1,29 @@
 <?php
 
-namespace App\Filament\Resources\CourseResource\RelationManagers;
+namespace App\Filament\Resources\CourseResource\Pages;
 
+use App\Filament\Resources\CourseResource;
+use Filament\Actions;
 use Filament\Forms;
-use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Form;
+use Filament\Resources\Pages\ManageRelatedRecords;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Guava\Filament\NestedResources\RelationManagers\NestedRelationManager;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class AssignmentsRelationManager extends NestedRelationManager
+class ManageAssignments extends ManageRelatedRecords
 {
+    protected static string $resource = CourseResource::class;
+
     protected static string $relationship = 'assignments';
+
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    public static function getNavigationLabel(): string
+    {
+        return 'Assignments';
+    }
 
     public function form(Form $form): Form
     {
@@ -28,24 +40,24 @@ class AssignmentsRelationManager extends NestedRelationManager
         return $table
             ->recordTitleAttribute('name')
             ->columns([
-                Tables\Columns\TextColumn::make('ordering'),
                 Tables\Columns\TextColumn::make('name'),
-                Tables\Columns\TextInputColumn::make('max_submissions')
-                    ->rules(['required', 'numeric', 'min:1', 'max:10']),
             ])
-            ->reorderable('ordering')
             ->filters([
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()
+                    ->label('New Assignment'),
+                //Tables\Actions\AssociateAction::make(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                //Tables\Actions\DissociateAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
+                    //Tables\Actions\DissociateBulkAction::make(),
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);

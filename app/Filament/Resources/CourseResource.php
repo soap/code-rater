@@ -2,11 +2,13 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\SaleModeEnum;
 use App\Filament\Resources\CourseResource\Pages;
 use App\Filament\Resources\CourseResource\RelationManagers;
 use App\Models\Course;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Guava\Filament\NestedResources\Resources\NestedResource;
@@ -65,10 +67,10 @@ class CourseResource extends NestedResource
                                 Forms\Components\TextInput::make('price')
                                     ->required()
                                     ->numeric()
-                                    ->prefix('$'),
-                                Forms\Components\TextInput::make('sale_mode')
+                                    ->prefix('฿'),
+                                Forms\Components\Select::make('sale_mode')
                                     ->required()
-                                    ->numeric(),
+                                    ->options(SaleModeEnum::class),
                             ]),
                     ]),
 
@@ -93,11 +95,10 @@ class CourseResource extends NestedResource
                     ->date()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('price')
-                    ->money()
+                    ->money('THB')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('sale_mode')
-                    ->numeric()
-                    ->sortable(),
+                Tables\Columns\SelectColumn::make('sale_mode')
+                    ->options(SaleModeEnum::class),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -113,6 +114,12 @@ class CourseResource extends NestedResource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('Assignments')
+                    //->icon('heroicon-o-clipboard-list')
+                    ->url(fn (Course $record) =>static::getUrl('assignments', [
+                        'record' => $record->id
+                    ])
+                    ),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -125,6 +132,7 @@ class CourseResource extends NestedResource
     {
         return [
             RelationManagers\AssignmentsRelationManager::class,
+            RelationManagers\AttendantsRelationManager::class
         ];
     }
 
@@ -135,6 +143,7 @@ class CourseResource extends NestedResource
             'create' => Pages\CreateCourse::route('/create'),
             'view' => Pages\ViewCourse::route('/{record}'),
             'edit' => Pages\EditCourse::route('/{record}/edit'),
+            'assignments' => Pages\ManageAssignments::route('/{record}/assignments'),
         ];
     }
 }
