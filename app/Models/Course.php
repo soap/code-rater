@@ -36,6 +36,11 @@ class Course extends Model
 
     public function attendants(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'course_attendants')->using(CourseAttendant::class);
+        return $this->belongsToMany(User::class, 'course_attendants')->using(CourseAttendant::class)
+            ->withPivot([
+                'is_active', 'is_completed', 'completed_at', 
+                'started_at', 'expired_at', 
+                'enrolled_at', 'unenrolled_at', 'last_accessed_at', 'notes'
+            ]);
     }
 }

@@ -6,10 +6,12 @@ use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
 use Filament\Forms;
+use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Forms\Components\Section;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -21,7 +23,9 @@ class UserResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return $form
+        return $form->schema([
+            Section::make('Personal Information')
+            ->columns(2)
             ->schema([
                 Forms\Components\TextInput::make('first_name')
                     ->required()
@@ -29,50 +33,51 @@ class UserResource extends Resource
                 Forms\Components\TextInput::make('last_name')
                     ->required()
                     ->maxLength(255),
+
+                Forms\Components\TextInput::make('password')
+                    ->hiddenOn(['edit'])
+                    ->password()
+                    ->required()
+                    ->maxLength(255),
+
                 Forms\Components\TextInput::make('email')
                     ->email()
                     ->required()
                     ->maxLength(255),
-                Forms\Components\DateTimePicker::make('email_verified_at'),
-                Forms\Components\TextInput::make('password')
-                    ->password()
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\Textarea::make('two_factor_secret')
-                    ->maxLength(65535)
-                    ->columnSpanFull(),
-                Forms\Components\Textarea::make('two_factor_recovery_codes')
-                    ->maxLength(65535)
-                    ->columnSpanFull(),
-                Forms\Components\DateTimePicker::make('two_factor_confirmed_at'),
-                Forms\Components\TextInput::make('current_team_id')
-                    ->numeric(),
-                Forms\Components\TextInput::make('profile_photo_path')
-                    ->maxLength(2048),
-            ]);
+                Forms\Components\DateTimePicker::make('email_verified_at'),                    
+            ]),
+            Section::make('Roles')
+            ->schema([
+                Forms\Components\Select::make('roles')
+                    ->relationship('roles', 'name')
+                    ->multiple()
+                    ->preload()
+                    ->searchable()    
+            ])                
+        ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('first_name')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('last_name')
-                    ->searchable(),
+                Tables\Columns\ImageColumn::make('profile_photo_path')
+                    ->label('Avatar')
+                    ->circular()
+                    ->defaultImageUrl(url('/storage/profile-photos/no-photo.jpg'))
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('full_name')
+                    ->searchable(['first_name', 'last_name'])
+                    ->sortable(['first_name', 'last_name']),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email_verified_at')
                     ->dateTime()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('two_factor_confirmed_at')
-                    ->dateTime()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('current_team_id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('profile_photo_path')
-                    ->searchable(),
+                Tables\Columns\TextColumn::make('role_names')
+                    ->label('Roles')
+                    ->badge()
+                    ->separator(', '),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
