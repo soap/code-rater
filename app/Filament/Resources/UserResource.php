@@ -12,6 +12,8 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Forms\Components\Section;
+use Illuminate\Support\Collection;
+use Spatie\Permission\Models\Role;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -33,13 +35,11 @@ class UserResource extends Resource
                 Forms\Components\TextInput::make('last_name')
                     ->required()
                     ->maxLength(255),
-
                 Forms\Components\TextInput::make('password')
                     ->hiddenOn(['edit'])
                     ->password()
                     ->required()
                     ->maxLength(255),
-
                 Forms\Components\TextInput::make('email')
                     ->email()
                     ->required()
@@ -77,7 +77,7 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('role_names')
                     ->label('Roles')
                     ->badge()
-                    ->separator(', '),
+                    ->separator(','),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -97,6 +97,23 @@ class UserResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\BulkAction::make('Add Roles')
+                        ->icon('heroicon-o-plus-circle')
+                        ->form([
+                            Forms\Components\Select::make('roles')
+                                ->options(Role::pluck('name', 'name')->toArray())
+                                ->multiple()
+                                ->preload()
+                                ->searchable()    
+                        ])
+                        ->action(function(Collection $records, array $data): void {
+                            $roles = array_values($data['roles']);
+                            foreach ($records as $record) {
+                                $record->assignRole($roles);
+                            }
+                        })
+                        //->requiresConfirmation()
+                        ->deselectRecordsAfterCompletion(),
                 ]),
             ]);
     }

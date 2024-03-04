@@ -49,4 +49,10 @@ class CourseAssignment extends Model
     {
         return $this->hasMany(AssignmentSubmission::class);
     }
+
+    public function scopePublished(Builder $query): Builder
+    {
+        return $query->where('published_up', '<=', now())
+            ->where('published_down', '>=', now());
+    }
 }

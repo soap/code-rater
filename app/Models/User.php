@@ -13,6 +13,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Support\Collection;
 
 class User extends Authenticatable
 {
@@ -101,5 +102,15 @@ class User extends Authenticatable
             ->using(CourseAttendant::class);
     }
 
+    /**
+     * Get all course assignments for the user.
+     * @todo: This method should return Eloquent relationship.
+     */
 
+    public function courseAssignments(): Collection
+    {
+        $courseIds = $this->courses->pluck('id');
+        
+        return CourseAssignment::whereIn('course_id', $courseIds);
+    }
 }
