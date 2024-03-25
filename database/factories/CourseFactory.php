@@ -17,7 +17,11 @@ class CourseFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => $this->faker->sentence(),
+            'slug' => $this->faker->slug(),
+            'start_date' => $this->faker->dateTimeBetween('now', '+1 month'),
+            'price' => 100000,
+            'sale_mode' => 2, // one-time,
         ];
     }
 }

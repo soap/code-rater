@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AssignmentsController;
+use App\Http\Controllers\CourseAssignmentsController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -25,5 +26,5 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
-    Route::get('/assignments', AssignmentsController::class)->name('assignments');
+    Route::get('/course-assignments', CourseAssignmentsController::class)->name('course-assignments');
 });

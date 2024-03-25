@@ -14,6 +14,7 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+        @filamentStyles
         <!-- Styles -->
         @livewireStyles
     </head>
@@ -40,6 +41,7 @@
 
         @stack('modals')
 
+        @filamentScripts
         @livewireScripts
     </body>
 </html>

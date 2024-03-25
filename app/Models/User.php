@@ -107,10 +107,12 @@ class User extends Authenticatable
      * @todo: This method should return Eloquent relationship.
      */
 
-    public function courseAssignments(): Collection
+    public function getCourseAssignments(): Collection
     {
         $courseIds = $this->courses->pluck('id');
         
-        return CourseAssignment::whereIn('course_id', $courseIds);
+        return CourseAssignment::whereIn('course_id', $courseIds)
+            ->with('course')
+            ->get();
     }
 }

@@ -20,7 +20,7 @@
                 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link href="{{ route('assignments') }}" :active="request()->routeIs('assignments')">
+                    <x-nav-link href="{{ route('course-assignments') }}" :active="request()->routeIs('course-assignments')">
                         {{ __('Assigments') }}
                     </x-nav-link>
                 </div>

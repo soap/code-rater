@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use App\Enums\SaleModeEnum;
+use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -42,5 +44,14 @@ class Course extends Model
                 'started_at', 'expired_at', 
                 'enrolled_at', 'unenrolled_at', 'last_accessed_at', 'notes'
             ]);
+    }
+
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->where('start_date', '<=', Carbon::today()->toDateString())     
+            ->where(function (Builder $query) {
+                $query->where('end_date', '>=', Carbon::today()->toDateString())
+                    ->orWhereNull('end_date');
+            });
     }
 }

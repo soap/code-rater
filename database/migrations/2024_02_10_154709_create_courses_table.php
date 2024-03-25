@@ -20,7 +20,7 @@ return new class extends Migration
             $table->date('start_date');
             $table->date('end_date')->nullable();
             $table->integer('price');
-            $table->integer('sale_mode')->comment('1: subscription, 2: one-time');
+            $table->integer('sale_mode')->comment('0: free, 1: subscription, 2: one-time');
             $table->timestamps();
         });
     }
