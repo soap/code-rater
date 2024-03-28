@@ -38,17 +38,30 @@ class ListCourseAssignments extends Component implements HasForms, HasTable
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('max_submissions'),
+                Tables\Columns\IconColumn::make('published')
+                    ->icon(function ($record) {
+                        return $record->isActive() ? 'heroicon-o-pencil' : 'heroicon-o-clock';
+                    }),
                 Tables\Columns\TextColumn::make('published_up')
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->datetime('Y-m-d H:i:s')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('published_down')
-                    ->datetime('Y-m-d H:i:s'),
+                ->toggleable(isToggledHiddenByDefault: true)
+                    ->datetime('Y-m-d H:i:s')
+                    ->sortable(),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                //
+                Tables\Actions\Action::make('Submissions')
+                    ->label(fn($record) => $record->isActive()?'Submissions':'Passed')
+                    ->color(fn ($record) => $record->isActive()?'success':'danger')
+                    ->icon(fn($record) => $record->isActive()?'heroicon-o-arrow-right-circle':'heroicon-o-clock')
+                    ->disabled(fn ($record) => !$record->isActive())
+                    
+                    //->view('course-assignments.submissions'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

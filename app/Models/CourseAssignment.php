@@ -101,4 +101,9 @@ class CourseAssignment extends Model
             });
         });
     }
+
+    public function isActive(): bool
+    {
+        return $this->published_up <= now() && $this->published_down >= now();
+    }
 }
