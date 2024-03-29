@@ -60,8 +60,8 @@ class ListCourseAssignments extends Component implements HasForms, HasTable
                     ->color(fn ($record) => $record->isActive()?'success':'danger')
                     ->icon(fn($record) => $record->isActive()?'heroicon-o-arrow-right-circle':'heroicon-o-clock')
                     ->disabled(fn ($record) => !$record->isActive())
+                    ->url(fn ($record) => route('course-assignment.submissions', $record))
                     
-                    //->view('course-assignments.submissions'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

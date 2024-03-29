@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AssignmentsController;
+use App\Http\Controllers\AssignmentSubmissionsController;
 use App\Http\Controllers\CourseAssignmentsController;
 /*
 |--------------------------------------------------------------------------
@@ -27,4 +27,5 @@ Route::middleware([
         return view('dashboard');
     })->name('dashboard');
     Route::get('/course-assignments', CourseAssignmentsController::class)->name('course-assignments');
+    Route::get('/course-assignments/{assignment}/submissions', AssignmentSubmissionsController::class)->name('course-assignment.submissions');
 });
