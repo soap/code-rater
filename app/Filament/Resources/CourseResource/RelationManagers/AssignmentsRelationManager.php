@@ -32,6 +32,8 @@ class AssignmentsRelationManager extends NestedRelationManager
                 Tables\Columns\TextColumn::make('name'),
                 Tables\Columns\TextInputColumn::make('max_submissions')
                     ->rules(['required', 'numeric', 'min:1', 'max:10']),
+                Tables\Columns\TextInputColumn::make('points')
+                    ->rules(['required', 'numeric', 'min:0']),
             ])
             ->reorderable('ordering')
             ->filters([

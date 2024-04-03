@@ -66,4 +66,30 @@ class UserFactory extends Factory
             'ownedTeams'
         );
     }
+
+    public function admin(): UserFactory
+    {
+        return $this->assignRole('Admin');
+    }
+
+    /**
+    * Configure the model factory.
+    *
+    * @return $this
+    */
+    public function configure(): static
+    {
+        return $this->afterMaking(function (User $user) {
+            return $user->assignRole('Customer');
+        });
+    }
+
+    /**
+    * @param array|\Spatie\Permission\Contracts\Role|string  ...$roles
+    * @return UserFactory
+    */
+    private function assignRole(...$roles): UserFactory
+    {
+        return $this->afterCreating(fn(User $user) => $user->syncRoles($roles));
+    }
 }

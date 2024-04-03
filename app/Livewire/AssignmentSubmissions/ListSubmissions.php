@@ -14,6 +14,7 @@ use Filament\Tables\Table;
 use Livewire\Component;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class ListSubmissions extends Component implements HasForms, HasTable
 {
@@ -76,14 +77,25 @@ class ListSubmissions extends Component implements HasForms, HasTable
                     ->form([
                         Components\FileUpload::make('file')
                             ->label('File')
-                            ->required(),
+                            ->required()
+                            ->maxSize(2*1024) // 2MB
+                            ->acceptedFileTypes(['application/zip', 'application/x-zip-compressed', 'application/x-zip'])
+                            ->disk('local')
+                            ->directory('submissions')
+                            ->visibility('private')
+                            ->getUploadedFileNameForStorageUsing(function (TemporaryUploadedFile $file): string {
+                                return str($file->getClientOriginalName())->prepend(auth()->id() . '-' 
+                                    . $this->courseAssignment->id . '-' . now()->format('YmdHis') . '-');
+                            }),
                     ])
                     ->mutateFormDataUsing(function (array $data): array {
                         $data['user_id'] = auth()->id();
                         $data['course_assignment_id'] = $this->courseAssignment->id;
 
                         return $data;
-                    }),
+                    })->after(function () {
+  
+                    })->createAnother(false),
             ]);
     }
 

@@ -44,6 +44,10 @@ class CourseAssignmentResource extends NestedResource
                     ->required()
                     ->numeric()
                     ->default(3),
+                Forms\Components\TextInput::make('points')
+                    ->required()
+                    ->numeric()
+                    ->default(100),
                 Forms\Components\DateTimePicker::make('published_up')
                     ->required(),
                 Forms\Components\DateTimePicker::make('published_down')
@@ -58,6 +62,9 @@ class CourseAssignmentResource extends NestedResource
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('max_submissions')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextInput::make('points')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('published_up')

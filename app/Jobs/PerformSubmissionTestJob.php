@@ -9,14 +9,14 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use App\Models\AssignmentSubmission;
 
-class ExtractSubmission implements ShouldQueue
+class PerformSubmissionTestJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
      * Create a new job instance.
      */
-    public function __construct(public AssignmentSubmission $submission)
+    public function __construct(protected AssignmentSubmission $submission)
     {
         //
     }

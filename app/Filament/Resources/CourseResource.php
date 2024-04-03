@@ -14,6 +14,8 @@ use Filament\Tables\Table;
 use Guava\Filament\NestedResources\Resources\NestedResource;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
+use Filament\Forms\Set;
+use Illuminate\Support\Str;
 
 class CourseResource extends NestedResource
 {
@@ -41,6 +43,8 @@ class CourseResource extends NestedResource
                                     ->columns(2)
                                     ->schema([
                                         Forms\Components\TextInput::make('name')
+                                            ->live()
+                                            ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state)))
                                             ->required()
                                             ->maxLength(255),
                                         Forms\Components\TextInput::make('slug')

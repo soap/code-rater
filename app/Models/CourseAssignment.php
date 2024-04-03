@@ -22,6 +22,7 @@ class CourseAssignment extends Model
         'description',
         'ordering', // This is the column that will be used to sort the records 
         'max_submission',
+        'points',
         'published_up',
         'published_down',
     ];

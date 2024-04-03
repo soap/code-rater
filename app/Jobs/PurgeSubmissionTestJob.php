@@ -8,15 +8,16 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use App\Models\AssignmentSubmission;
+use Illuminate\Support\Facades\Storage;
 
-class TestSubmission implements ShouldQueue
+class PurgeSubmissionTestJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
      * Create a new job instance.
      */
-    public function __construct(public AssignmentSubmission $submission)
+    public function __construct(protected AssignmentSubmission $submission)
     {
         //
     }
@@ -26,6 +27,7 @@ class TestSubmission implements ShouldQueue
      */
     public function handle(): void
     {
-        //
+        $storagePath = 'submission-tests/' . $this->submission->id;
+        Storage::disk('local')->deleteDirectory($storagePath);
     }
 }
