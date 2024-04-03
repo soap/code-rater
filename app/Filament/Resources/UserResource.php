@@ -36,9 +36,10 @@ class UserResource extends Resource
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('password')
-                    ->hiddenOn(['edit'])
                     ->password()
-                    ->required()
+                    ->dehydrateStateUsing(fn ($state) => Hash::make($state))
+                    ->dehydrated(fn ($state) => filled($state)) // the field is only save to the DB when it has a value ($state)
+                    ->required(fn ($livewire) => $livewire instanceof CreateRecord) // the field is only required on the Create page-
                     ->maxLength(255),
                 Forms\Components\TextInput::make('email')
                     ->email()
