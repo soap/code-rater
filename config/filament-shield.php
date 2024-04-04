@@ -18,14 +18,14 @@ return [
 
     'super_admin' => [
         'enabled' => true,
-        'name' => 'Super Admin',
+        'name' => env('APP_SUPER_ADMIN_ROLE_NAME', 'Super Admin'),
         'define_via_gate' => true,
         'intercept_gate' => 'before', // after
     ],
 
     'panel_user' => [
         'enabled' => true,
-        'name' => 'Admin',
+        'name' => env('APP_PANEL_USER_ROLE_NAME', 'Admin'),
     ],
 
     'permission_prefixes' => [

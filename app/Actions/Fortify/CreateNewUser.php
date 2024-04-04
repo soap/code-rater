@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 use Laravel\Jetstream\Jetstream;
+use BezhanSalleh\FilamentShield\Support\Utils;
 
 class CreateNewUser implements CreatesNewUsers
 {
@@ -34,7 +35,8 @@ class CreateNewUser implements CreatesNewUsers
             'password' => Hash::make($input['password']),
         ]);
 
-        $user->assignRole('Customer');
+        $user->assignRole(env('APP_DEFAULT_ROLE_NAME', 'Customer'));
+        $user->removeRole(Utils::getPanelUserRoleName());  // Filament Shield add PanelUser Role by default
         
         return $user;
     }

@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 use Laravel\Jetstream\Features;
+use Spatie\Permission\Models\Role;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
@@ -79,6 +80,10 @@ class UserFactory extends Factory
     */
     public function configure(): static
     {
+        if (Role::where('name', 'Customer')->doesntExist()) {
+            Role::create(['name' => 'Customer', 'guard_name' => 'web']);
+        }
+
         return $this->afterMaking(function (User $user) {
             return $user->assignRole('Customer');
         });
